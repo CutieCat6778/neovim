@@ -1,16 +1,19 @@
 -- Set leader key
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- For conciseness
 local opts = { noremap = true, silent = true }
 
+-- Undo files
+vim.keymap.set('i', '<C-z>', '<cmd> u <CR>', opts)
+vim.keymap.set('i', '<C-S-z>', '<cmd> redo <CR>', opts)
+
 -- save file
 vim.keymap.set('n', '<C-s>', '<cmd> w <CR>', opts)
-
+vim.keymap.set('i', '<C-s>', '<cmd> w <CR><Esc>', opts)
 -- save file without auto-formatting
 vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
 
@@ -38,6 +41,7 @@ vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', opts)
 vim.keymap.set('n', '<Tab>', ':bnext<CR>', opts)
 vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', opts)
 vim.keymap.set('n', '<C-w>', ':Bdelete!<CR>', opts) -- close buffer
+vim.keymap.set('i', '<C-w>', ':Bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
 
 -- Window management
@@ -60,7 +64,6 @@ vim.keymap.set('n', '<leader>tp', ':tabp<CR>', opts) --  go to previous tab
 
 -- Toggle line wrapping
 vim.keymap.set('n', '<leader>lw', '<cmd>set wrap!<CR>', opts)
-
 -- Stay in indent mode
 vim.keymap.set('v', '<', '<gv', opts)
 vim.keymap.set('v', '>', '>gv', opts)

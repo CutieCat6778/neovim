@@ -37,4 +37,5 @@ return {
       require('colorizer').setup()
     end,
   },
+  { 'wakatime/vim-wakatime', lazy = false },
 }
