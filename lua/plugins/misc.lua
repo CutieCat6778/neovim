@@ -47,9 +47,10 @@ return {
 		"github/copilot.vim",
 	},
 	{
-		"ziglang/zig.vim",
+		"deoplete-plugins/deoplete-clang",
 	},
 	{
-		"deoplete-plugins/deoplete-clang",
+		"vimpostor/vim-tpipeline",
+		event = "VeryLazy",
 	},
 }

@@ -135,6 +135,21 @@ return {
 			end,
 		})
 
+		vim.g.zig_fmt_parse_errors = 0
+		-- disable format-on-save from `ziglang/zig.vim`
+		vim.g.zig_fmt_autosave = 0
+
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			pattern = { "*.zig", "*.zon" },
+			callback = function(ev)
+				vim.lsp.buf.code_action({
+					context = { only = { "source.organizeImports" } },
+					apply = true,
+				})
+				vim.lsp.buf.format()
+			end,
+		})
+
 		-- LSP servers and clients are able to communicate to each other what features they support.
 		--  By default, Neovim doesn't support everything that is in the LSP specification.
 		--  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
@@ -209,13 +224,16 @@ return {
 					} },
 				},
 			},
+			zls = {
+				zig_exe_path = "/sbin/zig",
+			},
+			jdtls = {},
 			tailwindcss = {},
 			dockerls = {},
 			sqlls = {},
 			-- terraformls = {},
 			jsonls = {},
 			yamlls = {},
-			jdtls = {},
 			lua_ls = {
 				-- cmd = {...},
 				-- filetypes = { ...},
