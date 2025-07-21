@@ -24,13 +24,6 @@ return {
 		opts = {},
 	},
 	{
-		-- Highlight todo, notes, etc in comments
-		"folke/todo-comments.nvim",
-		event = "VimEnter",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = { signs = false },
-	},
-	{
 		-- High-performance color highlighter
 		"norcalli/nvim-colorizer.lua",
 		config = function()
@@ -41,10 +34,6 @@ return {
 		-- WakaTime time tracker
 		"wakatime/vim-wakatime",
 		lazy = false,
-	},
-	{
-		-- Copilot helper
-		"github/copilot.vim",
 	},
 	{
 		"deoplete-plugins/deoplete-clang",
