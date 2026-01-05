@@ -45,4 +45,13 @@ return {
 	{
 		"sudar/vim-arduino-syntax",
 	},
+	{
+		"MunifTanjim/nui.nvim",
+	},
+	{
+		"mfussenegger/nvim-dap",
+	},
+	{
+		"mfussenegger/nvim-dap-ui",
+	},
 }
