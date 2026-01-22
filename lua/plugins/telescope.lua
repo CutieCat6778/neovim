@@ -55,18 +55,41 @@ return {
             ['<C-l>'] = require('telescope.actions').select_default, -- open file
           },
         },
+        -- Fix for tree-sitter highlighting errors in buffer previews
+        buffer_previewer_maker = function(filepath, bufnr, opts)
+          opts = opts or {}
+
+          filepath = vim.fn.expand(filepath)
+          require('plenary.job'):new({
+            command = 'file',
+            args = { '--mime-type', '-b', filepath },
+            on_exit = function(j)
+              local mime_type = vim.split(j:result()[1], '/')[1]
+              if mime_type == 'text' then
+                -- Use default previewer with error handling
+                pcall(function()
+                  require('telescope.previewers').buffer_previewer_maker(filepath, bufnr, opts)
+                end)
+              else
+                vim.schedule(function()
+                  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 'BINARY FILE' })
+                end)
+              end
+            end
+          }):sync()
+        end,
       },
       pickers = {
         find_files = {
           file_ignore_patterns = { 'node_modules', '.git', '.venv' },
           hidden = true,
         },
-      },
-      live_grep = {
-        file_ignore_patterns = { 'node_modules', '.git', '.venv' },
-        additional_args = function(_)
-          return { '--hidden' }
-        end,
+        live_grep = {
+          file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+          additional_args = function(_)
+            return { '--hidden' }
+          end,
+        },
       },
       extensions = {
         ['ui-select'] = {

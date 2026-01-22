@@ -74,11 +74,5 @@ return {
 		vim.keymap.set("n", "<leader>di", dap.step_into, opts)
 		vim.keymap.set("n", "<leader>do", dap.step_over, opts)
 		vim.keymap.set("n", "<leader>du", dap.step_out, opts)
-
-		-- dap-ui setup
-		require("dapui").setup()
-		dap.listeners.after.event_initialized["dapui_config"] = require("dapui").open
-		dap.listeners.before.event_terminated["dapui_config"] = require("dapui").close
-		dap.listeners.before.event_exited["dapui_config"] = require("dapui").close
 	end,
 }

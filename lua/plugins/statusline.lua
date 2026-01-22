@@ -4,8 +4,8 @@ return {
 		local mode = {
 			"mode",
 			fmt = function(str)
-				return " " .. str
-				-- return ' ' .. str:sub(1, 1) -- displays only the first character of the mode
+				return " " .. str
+				-- return ' ' .. str:sub(1, 1) -- displays only the first character of the mode
 			end,
 		}
 
@@ -20,31 +20,37 @@ return {
 		end
 
 		local function xcodebuild_device()
-			if vim.g.xcodebuild_platform == "macOS" then
-				return " macOS"
+			local platform = vim.g.xcodebuild_platform
+			if not platform then
+				return ""
 			end
 
-			local deviceIcon = ""
-			if vim.g.xcodebuild_platform:match("watch") then
+			if platform == "macOS" then
+				return " macOS"
+			end
+
+			local deviceIcon = ""
+			if platform:match("watch") then
 				deviceIcon = "􀟤"
-			elseif vim.g.xcodebuild_platform:match("tv") then
+			elseif platform:match("tv") then
 				deviceIcon = "􀡴 "
-			elseif vim.g.xcodebuild_platform:match("vision") then
+			elseif platform:match("vision") then
 				deviceIcon = "􁎖 "
 			end
 
+			local device_name = vim.g.xcodebuild_device_name or ""
 			if vim.g.xcodebuild_os then
-				return deviceIcon .. " " .. vim.g.xcodebuild_device_name .. " (" .. vim.g.xcodebuild_os .. ")"
+				return deviceIcon .. " " .. device_name .. " (" .. vim.g.xcodebuild_os .. ")"
 			end
 
-			return deviceIcon .. " " .. vim.g.xcodebuild_device_name
+			return deviceIcon .. " " .. device_name
 		end
 
 		local diagnostics = {
 			"diagnostics",
 			sources = { "nvim_diagnostic" },
 			sections = { "error", "warn" },
-			symbols = { error = " ", warn = " ", info = " ", hint = " " },
+			symbols = { error = " ", warn = " ", info = " ", hint = " " },
 			colored = false,
 			update_in_insert = false,
 			always_visible = false,
@@ -54,7 +60,7 @@ return {
 		local diff = {
 			"diff",
 			colored = false,
-			symbols = { added = " ", modified = " ", removed = " " }, -- changes diff symbols
+			symbols = { added = " ", modified = " ", removed = " " }, -- changes diff symbols
 			cond = hide_in_width,
 		}
 
@@ -64,9 +70,9 @@ return {
 				theme = "nord", -- Set theme based on environment variable
 				-- Some useful glyphs:
 				-- https://www.nerdfonts.com/cheat-sheet
-				--        
-				section_separators = { left = "", right = "" },
-				component_separators = { left = "", right = "" },
+				--
+				section_separators = { left = "", right = "" },
+				component_separators = { left = "", right = "" },
 				disabled_filetypes = { "alpha", "neo-tree" },
 				always_divide_middle = true,
 			},
@@ -76,7 +82,7 @@ return {
 				lualine_c = { filename },
 				lualine_y = { "location" },
 				lualine_x = {
-					{ "' ' .. vim.g.xcodebuild_last_status", color = { fg = "Gray" } },
+					{ "' ' .. vim.g.xcodebuild_last_status", color = { fg = "Gray" } },
 					{ "'󰙨 ' .. vim.g.xcodebuild_test_plan", color = { fg = "#a6e3a1", bg = "#161622" } },
 					{ xcodebuild_device, color = { fg = "#f9e2af", bg = "#161622" } },
 				},
@@ -93,5 +99,8 @@ return {
 			tabline = {},
 			extensions = { "fugitive" },
 		})
+
+		-- Disable vim's statusline display (tpipeline renders it in tmux instead)
+		vim.o.laststatus = 0
 	end,
 }

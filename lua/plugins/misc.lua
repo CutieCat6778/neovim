@@ -36,11 +36,13 @@ return {
 		lazy = false,
 	},
 	{
-		"deoplete-plugins/deoplete-clang",
-	},
-	{
 		"vimpostor/vim-tpipeline",
 		event = "VeryLazy",
+		config = function()
+			vim.g.tpipeline_focuslost = 1
+			vim.o.laststatus = 0
+			vim.go.laststatus = 0
+		end,
 	},
 	{
 		"sudar/vim-arduino-syntax",
@@ -49,9 +51,6 @@ return {
 		"MunifTanjim/nui.nvim",
 	},
 	{
-		"mfussenegger/nvim-dap",
-	},
-	{
-		"mfussenegger/nvim-dap-ui",
+		"github/copilot.vim",
 	},
 }
