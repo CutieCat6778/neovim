@@ -6,7 +6,17 @@ return {
 	opts = {
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
-		explorer = { enabled = true },
+		explorer = {
+			enabled = true,
+			win = {
+				list = {
+					keys = {
+						["q"] = false,
+						["<C-s>"] = false,
+					},
+				},
+			},
+		},
 		indent = { enabled = true },
 		input = { enabled = true },
 		picker = {
@@ -59,19 +69,5 @@ return {
 				require("snacks").explorer()
 			end
 		end, { desc = "Toggle Snacks Explorer" })
-
-		-- Optional: auto-close Snacks windows on Quit
-		vim.api.nvim_create_autocmd("QuitPre", {
-			callback = function()
-				for _, w in ipairs(vim.api.nvim_list_wins()) do
-					local buf = vim.api.nvim_win_get_buf(w)
-					local ft = vim.bo[buf].filetype
-					-- Only close Snacks windows if there are >1 windows open
-					if ft:match("snacks_") and #vim.api.nvim_list_wins() > 1 then
-						vim.api.nvim_win_close(w, true)
-					end
-				end
-			end,
-		})
 	end,
 }

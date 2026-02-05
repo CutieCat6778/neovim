@@ -53,4 +53,11 @@ return {
 	{
 		"github/copilot.vim",
 	},
+	{
+		"junegunn/fzf",
+	},
+	{
+		"junegunn/fzf.vim",
+		dependencies = { "junegunn/fzf" },
+	},
 }

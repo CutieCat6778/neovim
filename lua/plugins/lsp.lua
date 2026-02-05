@@ -115,6 +115,7 @@ return {
 					},
 				},
 			},
+			texlab = {},
 		}
 
 		require("mason").setup()
