@@ -30,6 +30,8 @@ vim.o.showmode = false
 vim.o.cmdheight = 0
 vim.o.laststatus = 0
 
+vim.g.python3_host_prog = "/Applications/Xcode.app/Contents/Developer/usr/bin/python3"
+
 vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
 
 vim.env.PATH = vim.env.PATH .. ":/opt/homebrew/bin"

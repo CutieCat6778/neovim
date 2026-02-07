@@ -52,12 +52,7 @@ return {
 	},
 	{
 		"github/copilot.vim",
+		enabled = false,
 	},
-	{
-		"junegunn/fzf",
-	},
-	{
-		"junegunn/fzf.vim",
-		dependencies = { "junegunn/fzf" },
-	},
+	{ "goolord/alpha-nvim", enabled = false },
 }
