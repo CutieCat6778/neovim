@@ -56,6 +56,7 @@ vim.keymap.set("n", "<leader>tp", ":tabp<CR>", opts) --  go to previous tab
 
 -- Toggle line wrapping
 vim.keymap.set("n", "<leader>lw", "<cmd>set wrap!<CR>", opts)
+
 -- Stay in indent mode
 vim.keymap.set("v", "<", "<gv", opts)
 vim.keymap.set("v", ">", ">gv", opts)
@@ -109,7 +110,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
 		map("K", vim.lsp.buf.hover, "Hover Documentation")
-		map("<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
 
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
 		if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
