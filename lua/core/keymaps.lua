@@ -1,6 +1,3 @@
--- Set leader key
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
@@ -8,24 +5,21 @@ local opts = { noremap = true, silent = true }
 
 -- Undo files
 vim.keymap.set("i", "<C-z>", "<cmd> u <CR>", opts)
-vim.keymap.set("i", "<C-S-z>", "<cmd> redo <CR>", opts)
-vim.keymap.set("i", "<U>", "<cmd> redo <CR>", opts)
+vim.keymap.set("n", "U", "<C-r>", opts)
 
 -- Save file
 vim.keymap.set("n", "<C-s>", "<cmd> w <CR>", opts)
 vim.keymap.set("i", "<C-s>", "<cmd> w <CR><Esc>", opts)
+
 -- Save file without auto-formatting
 vim.keymap.set("n", "<leader>sn", "<cmd>noautocmd w <CR>", opts)
-
--- Quit file
-vim.keymap.set("n", "<C-q>", "<cmd> q <CR>", opts)
 
 -- Delete single character without copying into register
 vim.keymap.set("n", "x", '"_x', opts)
 
 -- Vertical scroll and center
-vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
-vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
+vim.keymap.set("n", "<C-d>", "Hzz", opts)
+vim.keymap.set("n", "<C-i>", "Lzz", opts)
 
 -- Find and center
 vim.keymap.set("n", "n", "nzzzv", opts)
@@ -38,8 +32,6 @@ vim.keymap.set("n", "<Left>", ":vertical resize -2<CR>", opts)
 vim.keymap.set("n", "<Right>", ":vertical resize +2<CR>", opts)
 
 -- Buffers
-vim.keymap.set("n", "<Tab>", ":bnext<CR>", opts)
-vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", opts)
 vim.keymap.set("n", "<C-w>", ":Bdelete!<CR>", opts) -- close buffer
 vim.keymap.set("i", "<C-w>", ":Bdelete!<CR>", opts) -- close buffer
 vim.keymap.set("n", "<leader>b", "<cmd> enew <CR>", opts) -- new buffer
@@ -165,32 +157,6 @@ vim.keymap.set("n", "<leader>xq", function()
 end, opts)
 vim.keymap.set("n", "<leader>xx", "<cmd>XcodebuildQuickfixLine<cr>", opts)
 vim.keymap.set("n", "<leader>xa", "<cmd>XcodebuildCodeActions<cr>", opts)
-
--------------------------------------------------------------------------------
--- DAP Keymaps
--------------------------------------------------------------------------------
-
-vim.keymap.set("n", "<leader>dc", function()
-	require("dap").continue()
-end, { silent = true, desc = "DAP Continue" })
-vim.keymap.set("n", "<leader>db", function()
-	require("dap").toggle_breakpoint()
-end, { silent = true, desc = "DAP Toggle Breakpoint" })
-vim.keymap.set("n", "<leader>dr", function()
-	require("dap").repl.open()
-end, { silent = true, desc = "DAP REPL" })
-vim.keymap.set("n", "<leader>dl", function()
-	require("dap").run_last()
-end, { silent = true, desc = "DAP Run Last" })
-vim.keymap.set("n", "<leader>di", function()
-	require("dap").step_into()
-end, { silent = true, desc = "DAP Step Into" })
-vim.keymap.set("n", "<leader>do", function()
-	require("dap").step_over()
-end, { silent = true, desc = "DAP Step Over" })
-vim.keymap.set("n", "<leader>du", function()
-	require("dap").step_out()
-end, { silent = true, desc = "DAP Step Out" })
 
 -------------------------------------------------------------------------------
 -- Lint Keymaps
