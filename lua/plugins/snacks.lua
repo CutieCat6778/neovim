@@ -7,7 +7,7 @@ return {
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
 		explorer = {
-			enabled = true,
+			enabled = false,
 			win = {
 				list = {
 					keys = {
@@ -17,7 +17,7 @@ return {
 				},
 			},
 		},
-		indent = { enabled = true },
+		indent = { enabled = false },
 		input = { enabled = true },
 		picker = {
 			enabled = true,
@@ -46,28 +46,5 @@ return {
 	},
 	config = function(_, opts)
 		require("snacks").setup(opts)
-
-		-- Toggle Snacks Explorer mapping
-		vim.keymap.set("n", "<leader>e", function()
-			local explorer_win
-			for _, w in ipairs(vim.api.nvim_list_wins()) do
-				local buf = vim.api.nvim_win_get_buf(w)
-				local ft = vim.bo[buf].filetype
-				if ft == "snacks_picker_list" then
-					explorer_win = w
-					break
-				end
-			end
-
-			if explorer_win then
-				if vim.api.nvim_get_current_win() == explorer_win then
-					vim.api.nvim_win_close(explorer_win, true)
-				else
-					vim.api.nvim_set_current_win(explorer_win)
-				end
-			else
-				require("snacks").explorer()
-			end
-		end, { desc = "Toggle Snacks Explorer" })
 	end,
 }

@@ -4,12 +4,12 @@ vim.g.maplocalleader = " "
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
--- For conciseness
 local opts = { noremap = true, silent = true }
 
 -- Undo files
 vim.keymap.set("i", "<C-z>", "<cmd> u <CR>", opts)
 vim.keymap.set("i", "<C-S-z>", "<cmd> redo <CR>", opts)
+vim.keymap.set("i", "<U>", "<cmd> redo <CR>", opts)
 
 -- Save file
 vim.keymap.set("n", "<C-s>", "<cmd> w <CR>", opts)
@@ -77,6 +77,57 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnos
 vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
+-- VimTeX group for which-key
+vim.keymap.set("n", "<localleader>l", "<Nop>", { silent = true, desc = "+vimtex" })
+
+-- LSP buffer-local keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("user-lsp-keymaps", { clear = true }),
+	callback = function(event)
+		local map = function(keys, func, desc, mode)
+			mode = mode or "n"
+			vim.keymap.set(mode, keys, func, {
+				buffer = event.buf,
+				silent = true,
+				desc = "LSP: " .. desc,
+			})
+		end
+
+		map("gd", function()
+			require("snacks").picker.lsp_definitions()
+		end, "[G]oto [D]efinition")
+		map("gr", function()
+			require("snacks").picker.lsp_references()
+		end, "[G]oto [R]eferences")
+		map("gI", function()
+			require("snacks").picker.lsp_implementations()
+		end, "[G]oto [I]mplementation")
+		map("<leader>D", function()
+			require("snacks").picker.lsp_type_definitions()
+		end, "Type [D]efinition")
+		map("<leader>ds", function()
+			require("snacks").picker.lsp_symbols()
+		end, "[D]ocument [S]ymbols")
+		map("<leader>ws", function()
+			require("snacks").picker.lsp_workspace_symbols()
+		end, "[W]orkspace [S]ymbols")
+
+		map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+		map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
+		map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+		map("K", vim.lsp.buf.hover, "Hover Documentation")
+		map("<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
+
+		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+			map("<leader>th", function()
+				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
+			end, "[T]oggle Inlay [H]ints")
+		end
+	end,
+})
+
 -------------------------------------------------------------------------------
 -- Xcodebuild Keymaps
 -------------------------------------------------------------------------------
@@ -109,6 +160,75 @@ vim.keymap.set("n", "<leader>x<cr>", "<cmd>XcodebuildPreviewToggle<cr>", opts)
 
 -- Devices & Quickfix
 vim.keymap.set("n", "<leader>xd", "<cmd>XcodebuildSelectDevice<cr>", opts)
-vim.keymap.set("n", "<leader>xq", "<cmd>Telescope quickfix<cr>", opts)
+vim.keymap.set("n", "<leader>xq", function()
+	require("snacks").picker.qflist()
+end, opts)
 vim.keymap.set("n", "<leader>xx", "<cmd>XcodebuildQuickfixLine<cr>", opts)
 vim.keymap.set("n", "<leader>xa", "<cmd>XcodebuildCodeActions<cr>", opts)
+
+-------------------------------------------------------------------------------
+-- DAP Keymaps
+-------------------------------------------------------------------------------
+
+vim.keymap.set("n", "<leader>dc", function()
+	require("dap").continue()
+end, { silent = true, desc = "DAP Continue" })
+vim.keymap.set("n", "<leader>db", function()
+	require("dap").toggle_breakpoint()
+end, { silent = true, desc = "DAP Toggle Breakpoint" })
+vim.keymap.set("n", "<leader>dr", function()
+	require("dap").repl.open()
+end, { silent = true, desc = "DAP REPL" })
+vim.keymap.set("n", "<leader>dl", function()
+	require("dap").run_last()
+end, { silent = true, desc = "DAP Run Last" })
+vim.keymap.set("n", "<leader>di", function()
+	require("dap").step_into()
+end, { silent = true, desc = "DAP Step Into" })
+vim.keymap.set("n", "<leader>do", function()
+	require("dap").step_over()
+end, { silent = true, desc = "DAP Step Over" })
+vim.keymap.set("n", "<leader>du", function()
+	require("dap").step_out()
+end, { silent = true, desc = "DAP Step Out" })
+
+-------------------------------------------------------------------------------
+-- Lint Keymaps
+-------------------------------------------------------------------------------
+
+vim.keymap.set("n", "<leader>ml", function()
+	require("lint").try_lint()
+end, { silent = true, desc = "Lint file" })
+
+-- Snacks
+vim.keymap.set("n", "<leader>e", function()
+	local explorer_win
+	for _, w in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(w)
+		local ft = vim.bo[buf].filetype
+		if ft == "snacks_picker_list" then
+			explorer_win = w
+			break
+		end
+	end
+
+	if explorer_win then
+		if vim.api.nvim_get_current_win() == explorer_win then
+			vim.api.nvim_win_close(explorer_win, true)
+		else
+			vim.api.nvim_set_current_win(explorer_win)
+		end
+	else
+		require("snacks").explorer()
+	end
+end, { desc = "Toggle Snacks Explorer" })
+
+vim.keymap.set("n", "<leader><space>", function()
+	Snacks.picker.smart() -- open files picker; press again to close (same source toggles)
+end, opts)
+vim.keymap.set("n", "<leader>,", function()
+	Snacks.picker.buffers() -- open files picker; press again to close (same source toggles)
+end, opts)
+vim.keymap.set("n", "<leader>/", function()
+	Snacks.picker.grep() -- open files picker; press again to close (same source toggles)
+end, opts)

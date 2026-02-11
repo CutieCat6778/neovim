@@ -48,11 +48,7 @@ return {
 		"sudar/vim-arduino-syntax",
 	},
 	{
-		"MunifTanjim/nui.nvim",
-	},
-	{
 		"github/copilot.vim",
 		enabled = false,
 	},
-	{ "goolord/alpha-nvim", enabled = false },
 }

@@ -33,6 +33,8 @@ return { -- Highlight, edit, and navigate code
 			"html",
 			"zig",
 			"swift",
+			"clang",
+			"cpp",
 		},
 		-- Autoinstall languages that are not installed
 		auto_install = true,
