@@ -31,33 +31,8 @@ vim.keymap.set("n", "<Down>", ":resize +2<CR>", opts)
 vim.keymap.set("n", "<Left>", ":vertical resize -2<CR>", opts)
 vim.keymap.set("n", "<Right>", ":vertical resize +2<CR>", opts)
 
--- Buffers
-vim.keymap.set("n", "<C-w>", "<cmd>Bdelete<CR>", opts) -- close buffer
-vim.keymap.set("i", "<C-w>", "<Esc><cmd>Bdelete<CR>", opts) -- close buffer
-vim.keymap.set("n", "<leader>b", "<cmd> enew <CR>", opts) -- new buffer
-vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>", opts) -- previous buffer
-vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>", opts) -- next buffer
-vim.keymap.set("n", "<leader>bp", "<cmd>BufferLinePick<CR>", opts) -- pick buffer
-vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", opts) -- delete buffer
-
 -- Window management
-vim.keymap.set("n", "<leader>v", "<C-w>v", opts) -- split window vertically
-vim.keymap.set("n", "<leader>h", "<C-w>s", opts) -- split window horizontally
-vim.keymap.set("n", "<leader>se", "<C-w>=", opts) -- make split windows equal width & height
-vim.keymap.set("n", "<leader>xs", ":close<CR>", opts) -- close current split window
-vim.keymap.set("", "pv", vim.cmd.Ex, opts)
-
--- Navigate between splits
-vim.keymap.set("n", "<C-k>", ":wincmd k<CR>", opts)
-vim.keymap.set("n", "<C-j>", ":wincmd j<CR>", opts)
-vim.keymap.set("n", "<C-h>", ":wincmd h<CR>", opts)
-vim.keymap.set("n", "<C-l>", ":wincmd l<CR>", opts)
-
--- Tabs
-vim.keymap.set("n", "<leader>to", ":tabnew<CR>", opts) -- open new tab
-vim.keymap.set("n", "<leader>tx", ":tabclose<CR>", opts) -- close current tab
-vim.keymap.set("n", "<leader>tn", ":tabn<CR>", opts) --  go to next tab
-vim.keymap.set("n", "<leader>tp", ":tabp<CR>", opts) --  go to previous tab
+vim.keymap.set("", "<leader>pv", vim.cmd.Ex, opts)
 
 -- Toggle line wrapping
 vim.keymap.set("n", "<leader>lw", "<cmd>set wrap!<CR>", opts)
@@ -97,7 +72,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "K", function()
 			vim.lsp.buf.hover()
 		end, opts)
-		vim.keymap.set("n", "<leader>vws", function()
+		vim.keymap.set("n", "<leader>ws", function()
 			vim.lsp.buf.workspace_symbol()
 		end, opts)
 		vim.keymap.set("n", "<leader>vca", function()
@@ -143,7 +118,7 @@ vim.keymap.set("n", "<leader>xa", "<cmd>XcodebuildCodeActions<cr>", opts)
 -------------------------------------------------------------------------------
 -- Telescope Keymaps
 -------------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>pf", function()
+vim.keymap.set("n", "<leader><space>", function()
 	local ok, builtin = pcall(require, "telescope.builtin")
 	if ok then
 		builtin.find_files()
@@ -191,21 +166,21 @@ end, opts)
 vim.keymap.set("n", "<leader>tt", function()
 	local ok, trouble = pcall(require, "trouble")
 	if ok then
-		trouble.toggle()
+		trouble.toggle("diagnostics")
 	end
 end, opts)
 
 vim.keymap.set("n", "[t", function()
 	local ok, trouble = pcall(require, "trouble")
 	if ok then
-		trouble.next({ skip_groups = true, jump = true })
+		trouble.previous({ mode = "diagnostics", skip_groups = true, jump = true })
 	end
 end, opts)
 
 vim.keymap.set("n", "]t", function()
 	local ok, trouble = pcall(require, "trouble")
 	if ok then
-		trouble.previous({ skip_groups = true, jump = true })
+		trouble.next({ mode = "diagnostics", skip_groups = true, jump = true })
 	end
 end, opts)
 

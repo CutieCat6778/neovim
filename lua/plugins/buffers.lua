@@ -22,7 +22,7 @@ return {
 			},
 		},
 		config = function(_, opts)
-			vim.o.showtabline = 2
+			vim.o.showtabline = 0
 			require("bufferline").setup(opts)
 		end,
 	},

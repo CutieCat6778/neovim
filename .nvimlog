@@ -15,3 +15,6 @@ WRN 2026-02-14T01:50:44.118 ?.60608    server_start:199: Failed to start server:
 WRN 2026-02-14T01:50:50.514 ?.60620    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/bKTMJe/nvim.60620.0
 WRN 2026-02-14T01:51:11.920 ?.60661    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/DgQExP/nvim.60661.0
 WRN 2026-02-14T01:51:40.625 ?.60810    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/pYDOQm/nvim.60810.0
+WRN 2026-02-14T02:13:28.304 ?.72780    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/l6ncEV/nvim.72780.0
+WRN 2026-02-14T02:14:52.523 ?.73119    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/5yERyO/nvim.73119.0
+WRN 2026-02-14T02:15:01.850 ?.73151    server_start:199: Failed to start server: operation not permitted: /var/folders/0s/dbghp1296hlgbv_z53rdpzy00000gn/T/nvim.thinh/GRp7nn/nvim.73151.0

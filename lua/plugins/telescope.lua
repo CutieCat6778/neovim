@@ -13,6 +13,12 @@ return {
 					-- Disable TS preview highlighting to avoid callback errors.
 					treesitter = false,
 				},
+				mappings = {
+					i = {
+						["<C-j>"] = "move_selection_next",
+						["<C-k>"] = "move_selection_previous",
+					}
+				}
 			},
 		})
 	end,
