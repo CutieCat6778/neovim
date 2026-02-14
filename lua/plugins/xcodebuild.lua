@@ -5,7 +5,7 @@ return {
 		-- useful to show previews and failing snapshots.
 
 		-- You must select at least one:
-		-- "nvim-telescope/telescope.nvim",
+		"nvim-telescope/telescope.nvim",
 		-- "ibhagwan/fzf-lua",
 		-- "folke/snacks.nvim", -- (optional) to show previews
 
@@ -17,8 +17,8 @@ return {
 			integrations = {
 				nvim_tree = { enabled = false },
 				oil_nvim = { enabled = false },
-				telescope_nvim = { enabled = false },
-				snacks_nvim = { enabled = true },
+				telescope_nvim = { enabled = true },
+				snacks_nvim = { enabled = false },
 			},
 		})
 	end,

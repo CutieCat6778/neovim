@@ -3,6 +3,8 @@ require("core.options")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+require("core.keymaps")
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -34,10 +36,6 @@ vim.o.laststatus = 0
 
 vim.g.python3_host_prog = "/Applications/Xcode.app/Contents/Developer/usr/bin/python3"
 
-vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
-
 vim.env.PATH = vim.env.PATH .. ":/opt/homebrew/bin"
 
 require("lazy").setup("plugins")
-
-require("core.keymaps")

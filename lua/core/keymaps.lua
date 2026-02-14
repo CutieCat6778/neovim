@@ -32,15 +32,20 @@ vim.keymap.set("n", "<Left>", ":vertical resize -2<CR>", opts)
 vim.keymap.set("n", "<Right>", ":vertical resize +2<CR>", opts)
 
 -- Buffers
-vim.keymap.set("n", "<C-w>", ":Bdelete!<CR>", opts) -- close buffer
-vim.keymap.set("i", "<C-w>", ":Bdelete!<CR>", opts) -- close buffer
+vim.keymap.set("n", "<C-w>", "<cmd>Bdelete<CR>", opts) -- close buffer
+vim.keymap.set("i", "<C-w>", "<Esc><cmd>Bdelete<CR>", opts) -- close buffer
 vim.keymap.set("n", "<leader>b", "<cmd> enew <CR>", opts) -- new buffer
+vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>", opts) -- previous buffer
+vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>", opts) -- next buffer
+vim.keymap.set("n", "<leader>bp", "<cmd>BufferLinePick<CR>", opts) -- pick buffer
+vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", opts) -- delete buffer
 
 -- Window management
 vim.keymap.set("n", "<leader>v", "<C-w>v", opts) -- split window vertically
 vim.keymap.set("n", "<leader>h", "<C-w>s", opts) -- split window horizontally
 vim.keymap.set("n", "<leader>se", "<C-w>=", opts) -- make split windows equal width & height
 vim.keymap.set("n", "<leader>xs", ":close<CR>", opts) -- close current split window
+vim.keymap.set("", "pv", vim.cmd.Ex, opts)
 
 -- Navigate between splits
 vim.keymap.set("n", "<C-k>", ":wincmd k<CR>", opts)
@@ -86,30 +91,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		map("gd", function()
-			require("snacks").picker.lsp_definitions()
-		end, "[G]oto [D]efinition")
-		map("gr", function()
-			require("snacks").picker.lsp_references()
-		end, "[G]oto [R]eferences")
-		map("gI", function()
-			require("snacks").picker.lsp_implementations()
-		end, "[G]oto [I]mplementation")
-		map("<leader>D", function()
-			require("snacks").picker.lsp_type_definitions()
-		end, "Type [D]efinition")
-		map("<leader>ds", function()
-			require("snacks").picker.lsp_symbols()
-		end, "[D]ocument [S]ymbols")
-		map("<leader>ws", function()
-			require("snacks").picker.lsp_workspace_symbols()
-		end, "[W]orkspace [S]ymbols")
-
-		map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-		map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
-		map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
-		map("K", vim.lsp.buf.hover, "Hover Documentation")
+		vim.keymap.set("n", "gd", function()
+			vim.lsp.buf.definition()
+		end, opts)
+		vim.keymap.set("n", "K", function()
+			vim.lsp.buf.hover()
+		end, opts)
+		vim.keymap.set("n", "<leader>vws", function()
+			vim.lsp.buf.workspace_symbol()
+		end, opts)
+		vim.keymap.set("n", "<leader>vca", function()
+			vim.lsp.buf.code_action()
+		end, opts)
+		vim.keymap.set("n", "<leader>vrr", function()
+			vim.lsp.buf.references()
+		end, opts)
+		vim.keymap.set("n", "<leader>vrn", function()
+			vim.lsp.buf.rename()
+		end, opts)
+		vim.keymap.set("i", "<C-h>", function()
+			vim.lsp.buf.signature_help()
+		end, opts)
 
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
 		if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
@@ -124,77 +126,184 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Xcodebuild Keymaps
 -------------------------------------------------------------------------------
 
--- Xcode command palette / picker
-vim.keymap.set("n", "<leader>X", "<cmd>XcodebuildPicker<cr>", opts)
-vim.keymap.set("n", "<leader>xf", "<cmd>XcodebuildProjectManager<cr>", opts)
-
--- Build & Run
-vim.keymap.set("n", "<leader>xb", "<cmd>XcodebuildBuild<cr>", opts)
-vim.keymap.set("n", "<leader>xB", "<cmd>XcodebuildBuildForTesting<cr>", opts)
 vim.keymap.set("n", "<leader>xr", "<cmd>XcodebuildBuildRun<cr>", opts)
-
--- Tests
-vim.keymap.set("n", "<leader>xt", "<cmd>XcodebuildTest<cr>", opts)
-vim.keymap.set("v", "<leader>xt", "<cmd>XcodebuildTestSelected<cr>", opts)
-vim.keymap.set("n", "<leader>xT", "<cmd>XcodebuildTestClass<cr>", opts)
-vim.keymap.set("n", "<leader>x.", "<cmd>XcodebuildTestRepeat<cr>", opts)
-
--- Logs & Coverage
 vim.keymap.set("n", "<leader>xl", "<cmd>XcodebuildToggleLogs<cr>", opts)
-vim.keymap.set("n", "<leader>xc", "<cmd>XcodebuildToggleCodeCoverage<cr>", opts)
-vim.keymap.set("n", "<leader>xC", "<cmd>XcodebuildShowCodeCoverageReport<cr>", opts)
-vim.keymap.set("n", "<leader>xe", "<cmd>XcodebuildTestExplorerToggle<cr>", opts)
-vim.keymap.set("n", "<leader>xs", "<cmd>XcodebuildFailingSnapshots<cr>", opts)
-
--- Previews
-vim.keymap.set("n", "<leader>xp", "<cmd>XcodebuildPreviewGenerateAndShow<cr>", opts)
-vim.keymap.set("n", "<leader>x<cr>", "<cmd>XcodebuildPreviewToggle<cr>", opts)
-
--- Devices & Quickfix
 vim.keymap.set("n", "<leader>xd", "<cmd>XcodebuildSelectDevice<cr>", opts)
 vim.keymap.set("n", "<leader>xq", function()
-	require("snacks").picker.qflist()
+	local ok, telescope_builtin = pcall(require, "telescope.builtin")
+	if ok then
+		telescope_builtin.quickfix()
+		return
+	end
+	vim.cmd("copen")
 end, opts)
 vim.keymap.set("n", "<leader>xx", "<cmd>XcodebuildQuickfixLine<cr>", opts)
 vim.keymap.set("n", "<leader>xa", "<cmd>XcodebuildCodeActions<cr>", opts)
 
 -------------------------------------------------------------------------------
--- Lint Keymaps
+-- Telescope Keymaps
 -------------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>pf", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.find_files()
+	end
+end, opts)
 
-vim.keymap.set("n", "<leader>ml", function()
-	require("lint").try_lint()
-end, { silent = true, desc = "Lint file" })
+vim.keymap.set("n", "<C-p>", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.git_files()
+	end
+end, opts)
 
--- Snacks
+vim.keymap.set("n", "<leader>pws", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.grep_string({ search = vim.fn.expand("<cword>") })
+	end
+end, opts)
+
+vim.keymap.set("n", "<leader>pWs", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.grep_string({ search = vim.fn.expand("<cWORD>") })
+	end
+end, opts)
+
+vim.keymap.set("n", "<leader>ps", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.grep_string({ search = vim.fn.input("Grep > ") })
+	end
+end, opts)
+
+vim.keymap.set("n", "<leader>vh", function()
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if ok then
+		builtin.help_tags()
+	end
+end, opts)
+
+-------------------------------------------------------------------------------
+-- Trouble Keymaps
+-------------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>tt", function()
+	local ok, trouble = pcall(require, "trouble")
+	if ok then
+		trouble.toggle()
+	end
+end, opts)
+
+vim.keymap.set("n", "[t", function()
+	local ok, trouble = pcall(require, "trouble")
+	if ok then
+		trouble.next({ skip_groups = true, jump = true })
+	end
+end, opts)
+
+vim.keymap.set("n", "]t", function()
+	local ok, trouble = pcall(require, "trouble")
+	if ok then
+		trouble.previous({ skip_groups = true, jump = true })
+	end
+end, opts)
+
+-------------------------------------------------------------------------------
+-- Fugitive Keymaps
+-------------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>gs", "<cmd>Git<CR>", opts)
+vim.keymap.set("n", "gu", "<cmd>diffget //2<CR>", opts)
+vim.keymap.set("n", "gh", "<cmd>diffget //3<CR>", opts)
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("user-fugitive-keymaps", { clear = true }),
+	pattern = "fugitive",
+	callback = function(event)
+		local fugitive_opts = { buffer = event.buf, remap = false, silent = true }
+
+		vim.keymap.set("n", "<leader>p", function()
+			vim.cmd.Git("push")
+		end, fugitive_opts)
+
+		vim.keymap.set("n", "<leader>P", function()
+			vim.cmd.Git({ "pull", "--rebase" })
+		end, fugitive_opts)
+
+		vim.keymap.set("n", "<leader>t", ":Git push -u origin ", fugitive_opts)
+	end,
+})
+
+-------------------------------------------------------------------------------
+-- Undotree Keymap
+-------------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<CR>", opts)
+
+-------------------------------------------------------------------------------
+-- Zen Mode Keymaps
+-------------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>zz", function()
+	local ok, zen = pcall(require, "zen-mode")
+	if not ok then
+		return
+	end
+
+	zen.setup({
+		window = {
+			width = 90,
+			options = {},
+		},
+	})
+	zen.toggle()
+	vim.wo.wrap = false
+	vim.wo.number = true
+	vim.wo.rnu = true
+end, opts)
+
+vim.keymap.set("n", "<leader>zZ", function()
+	local ok, zen = pcall(require, "zen-mode")
+	if not ok then
+		return
+	end
+
+	zen.setup({
+		window = {
+			width = 80,
+			options = {},
+		},
+	})
+	zen.toggle()
+	vim.wo.wrap = false
+	vim.wo.number = false
+	vim.wo.rnu = false
+	vim.opt.colorcolumn = "0"
+end, opts)
+
+-- Harpon keybinds
+
+vim.keymap.set("n", "<leader>A", function()
+	require("harpoon"):list():prepend()
+end)
+vim.keymap.set("n", "<leader>a", function()
+	require("harpoon"):list():add()
+end)
 vim.keymap.set("n", "<leader>e", function()
-	local explorer_win
-	for _, w in ipairs(vim.api.nvim_list_wins()) do
-		local buf = vim.api.nvim_win_get_buf(w)
-		local ft = vim.bo[buf].filetype
-		if ft == "snacks_picker_list" then
-			explorer_win = w
-			break
-		end
+	local ok, harpoon = pcall(require, "harpoon")
+	if not ok then
+		return
 	end
+	harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Harpoon quick menu" })
 
-	if explorer_win then
-		if vim.api.nvim_get_current_win() == explorer_win then
-			vim.api.nvim_win_close(explorer_win, true)
-		else
-			vim.api.nvim_set_current_win(explorer_win)
-		end
-	else
-		require("snacks").explorer()
-	end
-end, { desc = "Toggle Snacks Explorer" })
-
-vim.keymap.set("n", "<leader><space>", function()
-	Snacks.picker.smart() -- open files picker; press again to close (same source toggles)
-end, opts)
-vim.keymap.set("n", "<leader>,", function()
-	Snacks.picker.buffers() -- open files picker; press again to close (same source toggles)
-end, opts)
-vim.keymap.set("n", "<leader>/", function()
-	Snacks.picker.grep() -- open files picker; press again to close (same source toggles)
-end, opts)
+vim.keymap.set("n", "<C-h>", function()
+	require("harpoon"):list():select(1)
+end)
+vim.keymap.set("n", "<C-t>", function()
+	require("harpoon"):list():select(2)
+end)
+vim.keymap.set("n", "<C-n>", function()
+	require("harpoon"):list():select(3)
+end)
+vim.keymap.set("n", "<C-b>", function()
+	require("harpoon"):list():select(4)
+end)
