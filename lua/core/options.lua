@@ -42,10 +42,3 @@ vim.opt.runtimepath:remove("/usr/share/vim/vimfiles") -- Separate Vim plugins fr
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  callback = function(args)
-    if vim.bo[args.buf].filetype == "oil" then return end
-    require("conform").format({ bufnr = args.buf, lsp_fallback = true, timeout_ms = 2000 })
-  end,
-})
