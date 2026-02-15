@@ -25,3 +25,5 @@ vim.g.python3_host_prog = "/Applications/Xcode.app/Contents/Developer/usr/bin/py
 vim.env.PATH = vim.env.PATH .. ":/opt/homebrew/bin"
 
 require("lazy").setup("plugins")
+
+require("core.setup")
